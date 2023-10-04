@@ -20,13 +20,13 @@ class BasicAssistant:
     def __init__(self, intents_data: Union[str, os.PathLike, dict], method_mappings: dict = {}, hidden_layers: list = None, model_name: str = "basic_model") -> None:
 
         nltk.download('punkt', quiet=True)
-        nltk.download('wordnet', quiet=True)
+        # nltk.download('wordnet', quiet=True)
 
         if isinstance(intents_data, dict):
             self.intents_data = intents_data
         else:
             if os.path.exists(intents_data):
-                with open(intents_data, "r") as f:
+                with open(intents_data, "r", encoding="utf-8") as f:
                     self.intents_data = json.load(f)
             else:
                 raise FileNotFoundError
@@ -37,7 +37,10 @@ class BasicAssistant:
         self.model_name = model_name
         self.history = None
 
-        self.lemmatizer = nltk.stem.WordNetLemmatizer()
+        # self.lemmatizer = nltk.stem.WordNetLemmatizer()
+
+        # Use SnowballStemmer for Spanish
+        self.stemmer = SnowballStemmer("spanish")
 
         self.words = []
         self.intents = []
@@ -52,11 +55,13 @@ class BasicAssistant:
                 self.intents.append(intent["tag"])
 
             for pattern in intent["patterns"]:
-                pattern_words = nltk.word_tokenize(pattern)
+                # Tokenize and stem Spanish text
+                pattern_words = nltk.word_tokenize(pattern, language="spanish")
+                pattern_words = [self.stemmer.stem(w.lower()) for w in pattern_words]
                 self.words += pattern_words
                 documents.append((pattern_words, intent["tag"]))
 
-        self.words = [self.lemmatizer.lemmatize(w.lower()) for w in self.words if w not in ignore_letters]
+        self.words = [self.stemmer.stem(w.lower()) for w in self.words if w not in ignore_letters]
         self.words = sorted(set(self.words))
 
         empty_output = [0] * len(self.intents)
@@ -64,7 +69,7 @@ class BasicAssistant:
         for document in documents:
             bag_of_words = []
             pattern_words = document[0]
-            pattern_words = [self.lemmatizer.lemmatize(w.lower()) for w in pattern_words]
+            pattern_words = [self.stemmer.stem(w.lower()) for w in pattern_words]
             for word in self.words:
                 bag_of_words.append(1 if word in pattern_words else 0)
 
@@ -151,7 +156,7 @@ class BasicAssistant:
                 if intent["tag"] == predicted_intent:
                     return random.choice(intent["responses"])
         except IndexError:
-            return "I don't understand. Please try again."
+            return "No entendí eso, por favor intenta de nuevo."
 
 
 class GenericAssistant(BasicAssistant):

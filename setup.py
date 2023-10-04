@@ -8,8 +8,8 @@ with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
 VERSION = '0.1.0'
-DESCRIPTION = 'Simple interface for working with intents and chatbots.'
-LONG_DESCRIPTION = 'Simple interface for working with intents and chatbots.'
+DESCRIPTION = 'Simple interface for working with intents and chatbots in spanish.'
+LONG_DESCRIPTION = 'Simple interface for working with intents and chatbots in spanish. Adapted by Juan Carlos Corona'
 
 setup(
     name="neuralintents",
