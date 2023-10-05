@@ -12,7 +12,7 @@ DESCRIPTION = 'Simple interface for working with intents and chatbots in spanish
 LONG_DESCRIPTION = 'Simple interface for working with intents and chatbots in spanish. Adapted by Juan Carlos Corona'
 
 setup(
-    name="neuralintents_esp",
+    name="neuralintentsesp",
     version=VERSION,
     author="NeuralNine (Florian Dedov)",
     author_email="<mail@neuralnine.com>",
